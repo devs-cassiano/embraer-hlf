@@ -1,0 +1,14 @@
+{
+  "name": "fabric-example",
+  "version": "1.0.0",
+  "description": "Hyperledger Fabric example",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fabric-network": "^2.2.7"
+  }
+}

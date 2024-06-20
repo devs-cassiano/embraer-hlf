@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listar Processos por Estágio</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            width: 100%;
+        }
+
+        h1 {
+            color: #003865;
+        }
+
+        form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            margin-top: 20px;
+        }
+
+        label {
+            color: #005197;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #005197;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #003865;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            width: 300px;
+        }
+
+        li {
+            background-color: white;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .detail-button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .detail-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Listar Processos por Estágio</h1>
+    </header>
+    <form id="stageForm">
+        <label for="stage">Estágio:</label>
+        <input type="text" id="stage" name="stage" required>
+        <button type="submit">Listar Processos</button>
+    </form>
+    <ul id="processList"></ul>
+
+    <script>
+        document.getElementById('stageForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const stage = document.getElementById('stage').value;
+
+            fetch(`http://localhost:3000/listProcessesByStage/${stage}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Falha ao listar processos');
+                    }
+                    return response.json();
+                })
+                .then(processes => {
+                    const list = document.getElementById('processList');
+                    list.innerHTML = ''; // Clear previous results
+                    processes.forEach(process => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `${process.ID} - ${process.Name}`;
+
+                        const detailButton = document.createElement('button');
+                        detailButton.textContent = 'Detalhes';
+                        detailButton.className = 'detail-button';
+                        detailButton.onclick = () => readProcess(process.ID);
+
+                        listItem.appendChild(detailButton);
+                        list.appendChild(listItem);
+                    });
+                })
+                .catch(error => {
+                    alert('Erro: ' + error.message);
+                });
+        });
+
+        function readProcess(ID) {
+            window.location.href = `processDetail.html?processID=${ID}`;
+        }
+    </script>
+</body>
+</html>

@@ -6,6 +6,7 @@
 
 'use strict';
 
+
 const adminUserId = 'admin';
 const adminUserPasswd = 'adminpw';
 
@@ -50,7 +51,7 @@ exports.enrollAdmin = async (caClient, wallet, orgMspId) => {
 	}
 };
 
-exports.registerAndEnrollUser = async (caClient, wallet, orgMspId, userId, affiliation) => {
+exports.registerAndEnrollUser = async (caClient, wallet, orgMspId, userId, stage, userName, affiliation) => {
 	try {
 		// Check to see if we've already enrolled the user
 		const userIdentity = await wallet.get(userId);
@@ -76,6 +77,8 @@ exports.registerAndEnrollUser = async (caClient, wallet, orgMspId, userId, affil
 		const secret = await caClient.register({
 			affiliation: affiliation,
 			enrollmentID: userId,
+			userName: userName,
+			stage: stage,
 			role: 'client'
 		}, adminUser);
 		const enrollment = await caClient.enroll({
@@ -96,3 +99,5 @@ exports.registerAndEnrollUser = async (caClient, wallet, orgMspId, userId, affil
 		console.error(`Failed to register user : ${error}`);
 	}
 };
+
+
